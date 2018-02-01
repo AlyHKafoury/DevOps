@@ -1,0 +1,43 @@
+postgres:
+  image: postgres:9.4.5
+  environment:
+    POSTGRES_USER: drkiq
+    POSTGRES_PASSWORD: ${PG_PASSWORD}
+  ports:
+    - '5432:5432'
+  volumes:
+    - drkiq-postgres:/var/lib/postgresql/data
+
+redis:
+  image: redis:3.0.5
+  ports:
+    - '6379:6379'
+  volumes:
+    - drkiq-redis:/var/lib/redis/data
+
+drkiq:
+  build: .
+  stdin_open: true
+  tty: true
+  environment:
+    SECRET_TOKEN: ${RAILS_SECRET_TOKEN}
+    DATABASE_URL: ${RAILS_DATABASE_URL}
+  links:
+    - postgres
+    - redis
+  volumes:
+    - ./app/drkiq:/drkiq
+  ports:
+    - '8000:8000'
+
+sidekiq:
+  build: .
+  environment:
+    SECRET_TOKEN: ${RAILS_SECRET_TOKEN}
+    DATABASE_URL: ${RAILS_DATABASE_URL}
+  command: bundle exec sidekiq -C config/sidekiq.yml
+  links:
+    - postgres
+    - redis
+  volumes:
+    - ./app/drkiq:/drkiq
