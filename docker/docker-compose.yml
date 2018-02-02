@@ -20,6 +20,8 @@ drkiq:
   stdin_open: true
   tty: true
   environment:
+    LISTEN_ON: 0.0.0.0:9000
+    WORKER_PROCESSES: 2
     SECRET_TOKEN: ${RAILS_SECRET_TOKEN}
     DATABASE_URL: ${RAILS_DATABASE_URL}
   links:
@@ -28,7 +30,7 @@ drkiq:
   volumes:
     - ./app/drkiq:/drkiq
   ports:
-    - '8000:8000'
+    - '9000:9000'
 
 sidekiq:
   build: .

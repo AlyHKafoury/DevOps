@@ -22,4 +22,5 @@ RUN bundle exec rake RAILS_ENV=production DATABASE_URL=postgresql://user:pass@12
 
 VOLUME ["$INSTALL_PATH/public"]
 
+CMD bundle exec rails db:migrate
 CMD bundle exec unicorn -c config/unicorn.rb
