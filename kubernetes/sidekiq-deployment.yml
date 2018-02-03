@@ -6,7 +6,7 @@ metadata:
     app: rails
 spec:
   ports:
-    - port: 8070
+    - port: 8000
       targetPort: 8000
   selector:
     app: rails
@@ -23,8 +23,6 @@ spec:
     matchLabels:
       app: rails
       tier: sidekiq
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -32,8 +30,10 @@ spec:
         tier: sidekiq
     spec:
       containers:
-      - image: rails-app
-        name: rails-sidekiq
+      - image: rails-app:latest
+        name: sidekiq
+        imagePullPolicy: Never
+        command: ['bundle','exec','sidekiq','-C','config/sidekiq.yml']
         env:
         - name: DATABASE_URL
           valueFrom:
@@ -47,12 +47,4 @@ spec:
               key: RAILS_SECRET_TOKEN
         ports:
         - containerPort: 8000
-          name: sidekiq-app-port
-        volumeMounts:
-        - name: sidekiq-persistent-storage
-          mountPath: /drkiq
-      volumes:
-      - name: sidekiq-persistent-storage
-        hostPath:
-          path: ./app/drkiq
-          type: Directory
+          name: sidekiq-port

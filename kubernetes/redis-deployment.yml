@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rails-redis
+  name: redis
   labels:
     app: rails
     role: redis
@@ -18,7 +18,7 @@ spec:
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: rails-redis
+  name: redis
 spec:
   selector:
     matchLabels:
@@ -33,7 +33,7 @@ spec:
         tier: redis
     spec:
       containers:
-      - name: rails-redis
+      - name: redis
         image: redis:3.0.5  # or just image: redis
         resources:
           requests:
@@ -47,5 +47,5 @@ spec:
       volumes:
       - name: redis-persistent-storage
         hostPath:
-          path: drkiq-postgres
-          type: Directory
+          path: /data/drkiq-redis
+          type: DirectoryOrCreate

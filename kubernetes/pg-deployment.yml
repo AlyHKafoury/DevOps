@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rails-pg
+  name: postgres
   labels:
     app: rails
 spec:
@@ -15,7 +15,7 @@ spec:
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: rails-pg
+  name: postgres
   labels:
     app: rails
 spec:
@@ -23,8 +23,6 @@ spec:
     matchLabels:
       app: rails
       tier: database
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -33,7 +31,7 @@ spec:
     spec:
       containers:
       - image: postgres:9.4.5
-        name: rails-pg
+        name: postgres
         env:
         - name: POSTGRES_USER
           value: drkiq
@@ -51,5 +49,5 @@ spec:
       volumes:
       - name: pg-persistent-storage
         hostPath:
-          path: drkiq-redis
-          type: Directory
+          path: /data/drkiq-postgres
+          type: DirectoryOrCreate

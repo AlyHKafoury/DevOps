@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rails-configmap
+data:
+  LISTEN_ON: 0.0.0.0:9000
+  WORKER_PROCESSES: "2"
