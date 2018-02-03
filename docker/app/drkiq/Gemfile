@@ -6,10 +6,10 @@ git_source(:github) do |repo_name|
 end
 
 #Project Gems
-gem 'unicorn'    
-gem 'sidekiq'    
+gem 'unicorn'
+gem 'sidekiq', '~> 5.0.4'
 gem 'pg', '~> 0.21.0'
-gem 'redis-rails'       
+gem 'redis-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.1'

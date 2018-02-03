@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-redis
+  labels:
+    app: rails
+    role: redis
+    tier: redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: rails
+    role: redis
+    tier: redis
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: rails-redis
+spec:
+  selector:
+    matchLabels:
+      app: rails
+      role: redis
+      tier: redis
+  template:
+    metadata:
+      labels:
+        app: rails
+        role: redis
+        tier: redis
+    spec:
+      containers:
+      - name: rails-redis
+        image: redis:3.0.5  # or just image: redis
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-persistent-storage
+          mountPath: /var/lib/redis/data
+      volumes:
+      - name: redis-persistent-storage
+        hostPath:
+          path: drkiq-postgres
+          type: Directory

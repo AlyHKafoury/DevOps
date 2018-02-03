@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-sidekiq
+  labels:
+    app: rails
+spec:
+  ports:
+    - port: 8070
+      targetPort: 8000
+  selector:
+    app: rails
+    tier: sidekiq
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: rails-sidekiq
+  labels:
+    app: rails
+spec:
+  selector:
+    matchLabels:
+      app: rails
+      tier: sidekiq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rails
+        tier: sidekiq
+    spec:
+      containers:
+      - image: rails-app
+        name: rails-sidekiq
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: RAILS_DATABASE_URL
+        - name: SECRET_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: RAILS_SECRET_TOKEN
+        ports:
+        - containerPort: 8000
+          name: sidekiq-app-port
+        volumeMounts:
+        - name: sidekiq-persistent-storage
+          mountPath: /drkiq
+      volumes:
+      - name: sidekiq-persistent-storage
+        hostPath:
+          path: ./app/drkiq
+          type: Directory
