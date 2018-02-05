@@ -14,6 +14,7 @@ RUN mkdir -p $INSTALL_PATH
 WORKDIR $INSTALL_PATH
 
 COPY ./app/drkiq/Gemfile Gemfile
+RUN gem update bundler
 RUN bundle install
 
 COPY ./app/drkiq .

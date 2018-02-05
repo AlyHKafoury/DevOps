@@ -70,7 +70,7 @@ eval $(minikube docker-env)
 docker build -t rails-app ../docker/
 ```
 
-7. Created **kubernetes secret object** in `rails-secrets.yml` and apply it using :
+7. Created **kubernetes secret object** with the secret **environment variables** and encoded them in **base64** in `rails-secrets.yml` and apply it using :
 ```sh
 kubectl apply -f rails-secrets.yml
 ```
